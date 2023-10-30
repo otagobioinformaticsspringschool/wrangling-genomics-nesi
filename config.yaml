@@ -11,7 +11,7 @@
 carpentry: 'dc'
 
 # Overall title for pages.
-title: 'Data Wrangling and Processing for Genomics'
+title: 'Data Wrangling and Processing for Genomics (modified for NeSI)'
 
 # Date the lesson was created (YYYY-MM-DD, this is empty by default)
 created: '2015-03-24'
@@ -80,6 +80,6 @@ profiles:
 # sandpaper and varnish versions) should live
 
 
-url: 'https://datacarpentry.github.io/wrangling-genomics'
+url: 'https://otagobioinformaticsspringschool.github.io/wrangling-genomics'
 analytics: carpentries
 lang: en
