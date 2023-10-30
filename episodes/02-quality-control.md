@@ -18,11 +18,13 @@ exercises: 20
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
+**This lesson has been adapted from the original [Data Carpentry - Wrangling Genomics](https://datacarpentry.org/wrangling-genomics/) to be run using the NeSI infrastructure as part of the Otago Bioinformatics Spring School instead of AWS.**
+
 ## Bioinformatic workflows
 
 When working with high-throughput sequencing data, the raw reads you get off of the sequencer will need to pass
-through a number of  different tools in order to generate your final desired output. The execution of this set of
-tools in a specified order is commonly referred to as a *workflow* or a *pipeline*.
+through a number of different tools in order to generate your final desired output. The execution of this set of
+tools in a specified order is commonly referred to as a _workflow_ or a _pipeline_.
 
 An example of the workflow we will be using for our variant calling analysis is provided below with a brief
 description of each step.
@@ -45,9 +47,28 @@ built under the assumption that the data will be provided in a specific format.
 
 Often times, the first step in a bioinformatic workflow is getting the data you want to work with onto a computer where you can work with it. If you have outsourced sequencing of your data, the sequencing center will usually provide you with a link that you can use to download your data. Today we will be working with publicly available sequencing data.
 
-We are studying a population of *Escherichia coli* (designated Ara-3), which were propagated for more than 50,000 generations in a glucose-limited minimal medium. We will be working with three samples from this experiment, one from 5,000 generations, one from 15,000 generations, and one from 50,000 generations. The population changed substantially during the course of the experiment, and we will be exploring how with our variant calling workflow.
+We are studying a population of _Escherichia coli_ (designated Ara-3), which were propagated for more than 50,000 generations in a glucose-limited minimal medium. We will be working with three samples from this experiment, one from 5,000 generations, one from 15,000 generations, and one from 50,000 generations. The population changed substantially during the course of the experiment, and we will be exploring how with our variant calling workflow.
 
 The data are paired-end, so we will download two files for each sample. We will use the [European Nucleotide Archive](https://www.ebi.ac.uk/ena) to get our data. The ENA "provides a comprehensive record of the world's nucleotide sequencing information, covering raw sequencing data, sequence assembly information and functional annotation." The ENA also provides sequencing data in the fastq format, an important format for sequencing reads that we will be learning about today.
+
+To save time, the data has already been downloaded for you and placed in `~/obss_2023/genomic_dna/data/untrimmed_fastq`.
+
+Today we're going to be working inside of `~/obss_2023/genomic_dna`. The main directory structure for `genomic_dna/` (inside of `~/obss_2023/`) currently looks like this currently
+
+```bash
+genomic_dna/
+    |-adapters/
+    |-data/
+        `-untrimmed_fastq/
+    |-docs/
+    `-results/
+```
+
+Now lets navigate to where the untrimmed fastq data is stored.
+
+```bash
+cd ~/obss_2023/genomic_dna/data/untrimmed_fastq
+```
 
 To download the data, run the commands below.
 
@@ -55,9 +76,19 @@ Here we are using the `-p` option for `mkdir`. This option allows `mkdir` to cre
 
 It will take about 15 minutes to download the files.
 
+::::::::::::::::::::::::::::::::::::::::: callout
+
+## Original way to obtain the data (Use if not on NeSI)
+
+To download the data, run the commands below.
+
+Here we are using the `-p` option for `mkdir`. This option allows `mkdir` to create the new directory, even if one of the parent directories doesn't already exist. It also supresses errors if the directory already exists, without overwriting that directory.
+
+It will take about 15 minutes to download the files.
+
 ```bash
-mkdir -p ~/dc_workshop/data/untrimmed_fastq/
-cd ~/dc_workshop/data/untrimmed_fastq
+mkdir -p ~/obss_2022/data/untrimmed_fastq/
+cd ~/obss_2022/data/untrimmed_fastq
 
 curl -O ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR258/004/SRR2589044/SRR2589044_1.fastq.gz
 curl -O ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR258/004/SRR2589044/SRR2589044_2.fastq.gz
@@ -66,21 +97,6 @@ curl -O ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR258/003/SRR2584863/SRR2584863_2.fa
 curl -O ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR258/006/SRR2584866/SRR2584866_1.fastq.gz
 curl -O ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR258/006/SRR2584866/SRR2584866_2.fastq.gz
 ```
-
-:::::::::::::::::::::::::::::::::::::::::  callout
-
-### Faster option
-
-If your workshop is short on time or the venue's internet connection is weak or unstable, learners can
-avoid needing to download the data and instead use the data files provided in the `.backup/` directory.
-
-```bash
-$ cp ~/.backup/untrimmed_fastq/*fastq.gz .
-```
-
-This command creates a copy of each of the files in the `.backup/untrimmed_fastq/` directory that end in `fastq.gz` and
-places the copies in the current working directory (signified by `.`).
-
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -94,7 +110,7 @@ $ gunzip SRR2584863_1.fastq.gz
 
 We will now assess the quality of the sequence reads contained in our fastq files.
 
-![](fig/var_calling_workflow_qc.png){alt='workflow\_qc'}
+![](fig/var_calling_workflow_qc.png){alt='workflow_qc'}
 
 ### Details on the FASTQ format
 
@@ -102,12 +118,12 @@ Although it looks complicated (and it is), we can understand the
 [fastq](https://en.wikipedia.org/wiki/FASTQ_format) format with a little decoding. Some rules about the format
 include...
 
-| Line | Description                                                                                                  | 
+| Line | Description                                                                                                  |
 | ---- | ------------------------------------------------------------------------------------------------------------ |
-| 1    | Always begins with '@' and then information about the read                                                   | 
-| 2    | The actual DNA sequence                                                                                      | 
-| 3    | Always begins with a '+' and sometimes the same info in line 1                                               | 
-| 4    | Has a string of characters which represent the quality scores; must have same number of characters as line 2 | 
+| 1    | Always begins with '@' and then information about the read                                                   |
+| 2    | The actual DNA sequence                                                                                      |
+| 3    | Always begins with a '+' and sometimes the same info in line 1                                               |
+| 4    | Has a string of characters which represent the quality scores; must have same number of characters as line 2 |
 
 We can view the first complete read in one of the files our dataset by using `head` to look at
 the first four lines.
@@ -164,14 +180,14 @@ CCCFFFFFGHHHHJIJJJJIJJJIIJJJJIIIJJGFIIIJEDDFEGGJIFHHJIJJDECCGGEGIIJFHFFFACD:BBBD
 we can now see that there is a range of quality scores, but that the end of the sequence is
 very poor (`#` = a quality score of 2).
 
-:::::::::::::::::::::::::::::::::::::::  challenge
+::::::::::::::::::::::::::::::::::::::: challenge
 
 ### Exercise
 
 What is the last read in the `SRR2584863_1.fastq ` file? How confident
 are you in this read?
 
-:::::::::::::::  solution
+::::::::::::::: solution
 
 ### Solution
 
@@ -195,7 +211,24 @@ in just a moment.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-At this point, lets validate that all the relevant tools are installed. If you are using the AWS AMI then these *should* be preinstalled.
+At this point, lets validate that all the relevant tools are installed. If you are using the AWS AMI then these _should_ be preinstalled.
+
+::::::::::::::::::::::::: callout
+
+On NeSI, we load the tools by running a script that has the needed software and versions specified.
+
+```bash
+$ source ~/obss_2022/genomic_dna/modload.sh`
+```
+
+## Modules
+
+On NeSI, software is managed through `modules` which enable many versions of the same program to co-exist. This particular `modload.sh` script contains the commands that loads the specific software modules needed for our analysis.
+It uses the `module load` command which is then followed by the module you wish to use. In the case of `fastqc` we use `module load FastQC`. To find the modules for software managed on NeSI you can use `module spider <program name>`, e.g. `module spider fastqc` will return the names of the modules related to `fastqc`.
+
+For more information about using modules on NeSI see their [documentation](https://support.nesi.org.nz/hc/en-gb/articles/360000360576).
+
+:::::::::::::::::::::::::
 
 ```bash
 $ fastqc -h
@@ -336,7 +369,7 @@ analyses. Rather than looking at quality scores for each individual read, FastQC
 quality collectively across all reads within a sample. The image below shows one FastQC-generated plot that indicates
 a very high quality sample:
 
-![](fig/good_quality1.8.png){alt='good\_quality'}
+![](fig/good_quality1.8.png){alt='good_quality'}
 
 The x-axis displays the base position in the read, and the y-axis shows quality scores. In this
 example, the sample contains reads that are 40 bp long. This is much shorter than the reads we
@@ -353,7 +386,7 @@ acceptable (yellow), and bad (red) quality scores.
 
 Now let's take a look at a quality plot on the other end of the spectrum.
 
-![](fig/bad_quality1.8.png){alt='bad\_quality'}
+![](fig/bad_quality1.8.png){alt='bad_quality'}
 
 Here, we see positions within the read in which the boxes span a much wider range. Also, quality scores drop quite low into the "bad" range, particularly on the tail end of the reads. The FastQC tool produces several other diagnostic plots to assess sample quality, in addition to the one plotted above.
 
@@ -362,10 +395,10 @@ Here, we see positions within the read in which the boxes span a much wider rang
 We will now assess the quality of the reads that we downloaded. First, make sure you are still in the `untrimmed_fastq` directory
 
 ```bash
-$ cd ~/dc_workshop/data/untrimmed_fastq/
+$ cd ~/obss_2023/genomic_dna/data/untrimmed_fastq/
 ```
 
-:::::::::::::::::::::::::::::::::::::::  challenge
+::::::::::::::::::::::::::::::::::::::: challenge
 
 ### Exercise
 
@@ -373,7 +406,7 @@ How big are the files?
 (Hint: Look at the options for the `ls` command to see how to show
 file sizes.)
 
-:::::::::::::::  solution
+::::::::::::::: solution
 
 ### Solution
 
@@ -459,19 +492,26 @@ will move these
 output files into a new directory within our `results/` directory.
 
 ```bash
-$ mkdir -p ~/dc_workshop/results/fastqc_untrimmed_reads
-$ mv *.zip ~/dc_workshop/results/fastqc_untrimmed_reads/
-$ mv *.html ~/dc_workshop/results/fastqc_untrimmed_reads/
+$ mkdir -p ~/obss_2023/genomic_dna/results/fastqc_untrimmed_reads
+$ mv *.zip ~/obss_2023/genomic_dna/results/fastqc_untrimmed_reads/
+$ mv *.html ~/obss_2023/genomic_dna/results/fastqc_untrimmed_reads/
 ```
 
 Now we can navigate into this results directory and do some closer
 inspection of our output files.
 
 ```bash
-$ cd ~/dc_workshop/results/fastqc_untrimmed_reads/
+$ cd ~/obss_2023/genomic_dna/results/fastqc_untrimmed_reads/
 ```
 
 ### Viewing the FastQC results
+
+We can use the explorer as part of Jupyter hub to navigate to the directory
+containing the `.html` files and click on each one to view the results of Fastqc.
+
+:::::::::::::::::::::::::::::::::::::::::::::::::: callout
+
+## Original intstuctions for AWS
 
 If we were working on our local computers, we would be able to look at
 each of these HTML files by opening them in a web browser.
@@ -504,7 +544,9 @@ Now we can transfer our HTML files to our local computer using `scp`.
 $ scp dcuser@ec2-34-238-162-94.compute-1.amazonaws.com:~/dc_workshop/results/fastqc_untrimmed_reads/*.html ~/Desktop/fastqc_html
 ```
 
-:::::::::::::::::::::::::::::::::::::::::  callout
+:::::::::::::::::::::::::
+
+::::::::::::::::::::::::: callout
 
 ### Note on using zsh
 
@@ -522,7 +564,7 @@ Alternatively, you can put the whole path into quotation marks:
 $ scp "dcuser@ec2-34-238-162-94.compute-1.amazonaws.com:~/dc_workshop/results/fastqc_untrimmed_reads/*.html" ~/Desktop/fastqc_html
 ```
 
-::::::::::::::::::::::::::::::::::::::::::::::::::
+::::::::::::::::
 
 As a reminder, the first part
 of the command `dcuser@ec2-34-238-162-94.compute-1.amazonaws.com` is
@@ -555,7 +597,9 @@ Depending on your system,
 you should be able to select and open them all at once via a right click menu
 in your file browser.
 
-:::::::::::::::::::::::::::::::::::::::  challenge
+::::::::::::::::::::::::::::::::::::::::::::::::::
+
+::::::::::::::::::::::::::::::::::::::: challenge
 
 ### Exercise
 
@@ -563,14 +607,12 @@ Discuss your results with a neighbor. Which sample(s) looks the best
 in terms of per base sequence quality? Which sample(s) look the
 worst?
 
-:::::::::::::::  solution
+::::::::::::::: solution
 
 ### Solution
 
 All of the reads contain usable data, but the quality decreases toward
 the end of the reads.
-
-
 
 :::::::::::::::::::::::::
 
@@ -600,7 +642,7 @@ in your terminal program that is connected to your AWS instance
 our results subdirectory.
 
 ```bash
-$ cd ~/dc_workshop/results/fastqc_untrimmed_reads/
+$ cd ~/obss_2022/genomic_dna/results/fastqc_untrimmed_reads/
 $ ls
 ```
 
@@ -700,6 +742,7 @@ SRR2584863_2_fastqc       SRR2584866_2_fastqc       SRR2589044_2_fastqc
 SRR2584863_2_fastqc.html  SRR2584866_2_fastqc.html  SRR2589044_2_fastqc.html
 SRR2584863_2_fastqc.zip   SRR2584866_2_fastqc.zip   SRR2589044_2_fastqc.zip
 ```
+
 {:. output}
 
 The `.html` files and the uncompressed `.zip` files are still present,
@@ -758,27 +801,27 @@ We can make a record of the results we obtained for all our samples
 
 by concatenating all of our `summary.txt` files into a single file
 using the `cat` command. We will call this `fastqc_summaries.txt` and move
-it to `~/dc_workshop/docs`.
+it to `~/obss_2023/genomic_dna/docs`.
 
 ```bash
-$ cat */summary.txt > ~/dc_workshop/docs/fastqc_summaries.txt
+$ cat */summary.txt > ~/obss_2023/genomic_dna/docs/fastqc_summaries.txt
 ```
 
-:::::::::::::::::::::::::::::::::::::::  challenge
+::::::::::::::::::::::::::::::::::::::: challenge
 
 ### Exercise
 
 Which samples failed at least one of FastQC's quality tests? What
 test(s) did those samples fail?
 
-:::::::::::::::  solution
+::::::::::::::: solution
 
 ### Solution
 
 We can get the list of all failed tests using `grep`.
 
 ```bash
-$ cd ~/dc_workshop/docs
+$ cd ~/obss_2023/genomic_dna/docs
 $ grep FAIL fastqc_summaries.txt
 ```
 
@@ -801,9 +844,9 @@ FAIL    Adapter Content SRR2589044_2.fastq.gz
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-## Other notes  -- optional
+## Other notes -- optional
 
-:::::::::::::::::::::::::::::::::::::::::  callout
+::::::::::::::::::::::::::::::::::::::::: callout
 
 ### Quality encodings vary
 
@@ -818,10 +861,9 @@ used to generate your data, so that you can tell your quality control program wh
 to use. If you choose the wrong encoding, you run the risk of throwing away good reads or
 (even worse) not throwing away bad reads!
 
-
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-:::::::::::::::::::::::::::::::::::::::::  callout
+::::::::::::::::::::::::::::::::::::::::: callout
 
 ### Same symbols, different meanings
 
@@ -830,12 +872,11 @@ used to redirect output.
 Similarly, `$` is used as a shell prompt, but, as we saw earlier,
 it is also used to ask the shell to get the value of a variable.
 
-If the *shell* prints `>` or `$` then it expects you to type something,
+If the _shell_ prints `>` or `$` then it expects you to type something,
 and the symbol is a prompt.
 
-If *you* type `>` or `$` yourself, it is an instruction from you that
+If _you_ type `>` or `$` yourself, it is an instruction from you that
 the shell should redirect output or get the value of a variable.
-
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -845,5 +886,3 @@ the shell should redirect output or get the value of a variable.
 - `for` loops let you perform the same set of operations on multiple files with a single command.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
-
-
