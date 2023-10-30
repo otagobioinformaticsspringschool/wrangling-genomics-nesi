@@ -35,6 +35,6 @@ concept of genomic variation within a population.
 
 This lesson uses data hosted on NeSI. Workshop participants will be given information on how
 to log-in to NeSI during the workshop. Learners using these materials for self-directed study will need to set up their own
-AMI. Information on setting up an AMI and accessing the required data is provided on the original [Genomics Workshop setup page](http://www.datacarpentry.org/genomics-workshop/setup.html).
+AMI. Information on setting up an AMI and accessing the required data is provided on the original [Genomics Workshop setup page](https://www.datacarpentry.org/genomics-workshop/setup.html).
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::

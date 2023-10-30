@@ -87,8 +87,8 @@ Here we are using the `-p` option for `mkdir`. This option allows `mkdir` to cre
 It will take about 15 minutes to download the files.
 
 ```bash
-mkdir -p ~/obss_2022/data/untrimmed_fastq/
-cd ~/obss_2022/data/untrimmed_fastq
+mkdir -p ~/obss_2023/data/untrimmed_fastq/
+cd ~/obss_2023/data/untrimmed_fastq
 
 curl -O ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR258/004/SRR2589044/SRR2589044_1.fastq.gz
 curl -O ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR258/004/SRR2589044/SRR2589044_2.fastq.gz
