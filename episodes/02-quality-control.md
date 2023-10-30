@@ -228,7 +228,7 @@ It uses the `module load` command which is then followed by the module you wish 
 
 For more information about using modules on NeSI see their [documentation](https://support.nesi.org.nz/hc/en-gb/articles/360000360576).
 
-:::::::::::::::::::::::::
+::::::::::::::::::::::::::::::::::
 
 ```bash
 $ fastqc -h
@@ -544,8 +544,6 @@ Now we can transfer our HTML files to our local computer using `scp`.
 $ scp dcuser@ec2-34-238-162-94.compute-1.amazonaws.com:~/dc_workshop/results/fastqc_untrimmed_reads/*.html ~/Desktop/fastqc_html
 ```
 
-:::::::::::::::::::::::::
-
 ::::::::::::::::::::::::: callout
 
 ### Note on using zsh
@@ -564,7 +562,7 @@ Alternatively, you can put the whole path into quotation marks:
 $ scp "dcuser@ec2-34-238-162-94.compute-1.amazonaws.com:~/dc_workshop/results/fastqc_untrimmed_reads/*.html" ~/Desktop/fastqc_html
 ```
 
-::::::::::::::::
+::::::::::::::::::::::::::::::::::
 
 As a reminder, the first part
 of the command `dcuser@ec2-34-238-162-94.compute-1.amazonaws.com` is
@@ -597,7 +595,7 @@ Depending on your system,
 you should be able to select and open them all at once via a right click menu
 in your file browser.
 
-::::::::::::::::::::::::::::::::::::::::::::::::::
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::::: challenge
 
