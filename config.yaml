@@ -80,6 +80,6 @@ profiles:
 # sandpaper and varnish versions) should live
 
 
-url: 'https://otagobioinformaticsspringschool.github.io/wrangling-genomics'
+url: 'https://otagobioinformaticsspringschool.github.io/wrangling-genomics-nesi'
 analytics: carpentries
 lang: en
