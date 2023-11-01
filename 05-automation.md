@@ -17,6 +17,8 @@ exercises: 15
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
+**This lesson has been adapted from the original [Data Carpentry - Wrangling Genomics](https://datacarpentry.org/wrangling-genomics/) to be run using the NeSI infrastructure as part of the Otago Bioinformatics Spring School instead of AWS.**
+
 ## What is a shell script?
 
 You wrote a simple shell script in a [previous lesson](https://www.datacarpentry.org/shell-genomics/05-writing-scripts) that we used to extract bad reads from our
@@ -61,20 +63,20 @@ $ for infile in *_1.fastq.gz
 >   trimmomatic PE ${infile} ${base}_2.fastq.gz \
 >                ${base}_1.trim.fastq.gz ${base}_1un.trim.fastq.gz \
 >                ${base}_2.trim.fastq.gz ${base}_2un.trim.fastq.gz \
->                SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:NexteraPE-PE.fa:2:40:15 
+>                SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:NexteraPE-PE.fa:2:40:15
 > done
 ```
 
 Notice that in this `for` loop, we used two variables, `infile`, which was defined in the `for` statement, and `base`, which was created from the filename during each iteration of the loop.
 
-:::::::::::::::::::::::::::::::::::::::::  callout
+::::::::::::::::::::::::::::::::::::::::: callout
 
 ### Creating variables
 
 Within the Bash shell you can create variables at any time (as we did
 above, and during the 'for' loop lesson). Assign any name and the
 value using the assignment operator: '='. You can check the current
-definition of your variable by typing into your script: echo $variable\_name.
+definition of your variable by typing into your script: echo $variable_name.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -87,10 +89,10 @@ directory called `scripts/`. Previously, we used
 `nano` to create and open a new file. The command `touch` allows us to create a new file without opening that file.
 
 ```bash
-$ mkdir -p ~/dc_workshop/scripts
-$ cd ~/dc_workshop/scripts
+$ mkdir -p ~/obss_2023/genomic_dna/scripts
+$ cd ~/obss_2023/genomic_dna/scripts
 $ touch read_qc.sh
-$ ls 
+$ ls
 ```
 
 ```output
@@ -110,7 +112,10 @@ Our first line will ensure that our script will exit if an error occurs, and is 
 
 ```output
 set -e
-cd ~/dc_workshop/data/untrimmed_fastq/
+# load the needed modules
+source ~/obss_2023/genomic_dna/modload.sh
+
+cd ~/obss_2023/genomic_dna/data/untrimmed_fastq/
 ```
 
 These next two lines will give us a status message to tell us that we are currently running FastQC, then will run FastQC
@@ -124,7 +129,7 @@ fastqc *.fastq*
 Our next line will create a new directory to hold our FastQC output files. Here we are using the `-p` option for `mkdir` again. It is a good idea to use this option in your shell scripts to avoid running into errors if you do not have the directory structure you think you do.
 
 ```output
-mkdir -p ~/dc_workshop/results/fastqc_untrimmed_reads
+mkdir -p ~/obss_2023/genomic_dna/results/fastqc_untrimmed_reads
 ```
 
 Our next three lines first give us a status message to tell us we are saving the results from FastQC, then moves all of the files
@@ -132,14 +137,14 @@ with a `.zip` or a `.html` extension to the directory we just created for storin
 
 ```output
 echo "Saving FastQC results..."
-mv *.zip ~/dc_workshop/results/fastqc_untrimmed_reads/
-mv *.html ~/dc_workshop/results/fastqc_untrimmed_reads/
+mv *.zip ~/obss_2023/genomic_dna/results/fastqc_untrimmed_reads/
+mv *.html ~/obss_2023/genomic_dna/results/fastqc_untrimmed_reads/
 ```
 
 The next line moves us to the results directory where we have stored our output.
 
 ```output
-cd ~/dc_workshop/results/fastqc_untrimmed_reads/
+cd ~/obss_2023/genomic_dna/results/fastqc_untrimmed_reads/
 ```
 
 The next five lines should look very familiar. First we give ourselves a status message to tell us that we are unzipping our ZIP
@@ -158,10 +163,10 @@ what we are doing.
 
 ```output
 echo "Saving summary..."
-cat */summary.txt > ~/dc_workshop/docs/fastqc_summaries.txt
+cat */summary.txt > ~/obss_2023/genomic_dna/docs/fastqc_summaries.txt
 ```
 
-:::::::::::::::::::::::::::::::::::::::::  callout
+::::::::::::::::::::::::::::::::::::::::: callout
 
 ### Using `echo` statements
 
@@ -174,18 +179,22 @@ Your full shell script should now look like this:
 
 ```output
 set -e
-cd ~/dc_workshop/data/untrimmed_fastq/
+
+# load the needed modules
+source ~/obss_2023/genomic_dna/modload.sh
+
+cd ~/obss_2023/genomic_dna/data/untrimmed_fastq/
 
 echo "Running FastQC ..."
 fastqc *.fastq*
 
-mkdir -p ~/dc_workshop/results/fastqc_untrimmed_reads
+mkdir -p ~/obss_2023/genomic_dna/results/fastqc_untrimmed_reads
 
 echo "Saving FastQC results..."
-mv *.zip ~/dc_workshop/results/fastqc_untrimmed_reads/
-mv *.html ~/dc_workshop/results/fastqc_untrimmed_reads/
+mv *.zip ~/obss_2023/genomic_dna/results/fastqc_untrimmed_reads/
+mv *.html ~/obss_2023/genomic_dna/results/fastqc_untrimmed_reads/
 
-cd ~/dc_workshop/results/fastqc_untrimmed_reads/
+cd ~/obss_2023/genomic_dna/results/fastqc_untrimmed_reads/
 
 echo "Unzipping..."
 for filename in *.zip
@@ -194,7 +203,7 @@ for filename in *.zip
     done
 
 echo "Saving summary..."
-cat */summary.txt > ~/dc_workshop/docs/fastqc_summaries.txt
+cat */summary.txt > ~/obss_2023/genomic_dna/docs/fastqc_summaries.txt
 ```
 
 Save your file and exit `nano`. We can now run our script:
@@ -211,9 +220,9 @@ Approx 10% complete for SRR2584866.fastq
 Approx 15% complete for SRR2584866.fastq
 Approx 20% complete for SRR2584866.fastq
 Approx 25% complete for SRR2584866.fastq
-. 
-. 
-. 
+.
+.
+.
 ```
 
 For each of your sample files, FastQC will ask if you want to replace the existing version with a new version. This is
@@ -228,10 +237,10 @@ replace SRR2584866_fastqc/Icons/fastqc_icon.png? [y]es, [n]o, [A]ll, [N]one, [r]
 
 We can extend these principles to the entire variant calling workflow. To do this, we will take all of the individual commands that we wrote before, put them into a single file, add variables so that the script knows to iterate through our input files and write to the appropriate output files. This is very similar to what we did with our `read_qc.sh` script, but will be a bit more complex.
 
-Download the script from [here](files/run_variant_calling.sh). Download to `~/dc_workshop/scripts`.
+Download the script from [here](files/run_variant_calling_nesi.sh). Download to `~/obss_2023/genomic_dna/scripts`.
 
 ```bash
-curl -O https://datacarpentry.org/wrangling-genomics/files/run_variant_calling.sh
+curl -O https://otagobioinformaticsspringschool.github.io/wrangling-genomics-nesi/files/run_variant_calling_nesi.sh
 ```
 
 Our variant calling workflow has the following steps:
@@ -246,46 +255,50 @@ Our variant calling workflow has the following steps:
 Let's go through this script together:
 
 ```bash
-$ cd ~/dc_workshop/scripts
-$ less run_variant_calling.sh
+$ cd ~/obss_2023/genomic_dna/scripts
+$ less run_variant_calling_nesi.sh
 ```
 
 The script should look like this:
 
 ```output
 set -e
-cd ~/dc_workshop/results
 
-genome=~/dc_workshop/data/ref_genome/ecoli_rel606.fasta
+# load the needed modules
+source ~/obss_2023/genomic_dna/modload.sh
+
+cd ~/obss_2023/genomic_dna/results
+
+genome=~/obss_2023/genomic_dna/data/ref_genome/ecoli_rel606.fasta
 
 bwa index $genome
 
 mkdir -p sam bam bcf vcf
 
-for fq1 in ~/dc_workshop/data/trimmed_fastq_small/*_1.trim.sub.fastq
+for fq1 in ~/obss_2023/genomic_dna/data/trimmed_fastq_small/*_1.trim.sub.fastq
     do
     echo "working with file $fq1"
 
     base=$(basename $fq1 _1.trim.sub.fastq)
     echo "base name is $base"
 
-    fq1=~/dc_workshop/data/trimmed_fastq_small/${base}_1.trim.sub.fastq
-    fq2=~/dc_workshop/data/trimmed_fastq_small/${base}_2.trim.sub.fastq
-    sam=~/dc_workshop/results/sam/${base}.aligned.sam
-    bam=~/dc_workshop/results/bam/${base}.aligned.bam
-    sorted_bam=~/dc_workshop/results/bam/${base}.aligned.sorted.bam
-    raw_bcf=~/dc_workshop/results/bcf/${base}_raw.bcf
-    variants=~/dc_workshop/results/vcf/${base}_variants.vcf
-    final_variants=~/dc_workshop/results/vcf/${base}_final_variants.vcf 
+    fq1=~/obss_2023/genomic_dna/data/trimmed_fastq_small/${base}_1.trim.sub.fastq
+    fq2=~/obss_2023/genomic_dna/data/trimmed_fastq_small/${base}_2.trim.sub.fastq
+    sam=~/obss_2023/genomic_dna/results/sam/${base}.aligned.sam
+    bam=~/obss_2023/genomic_dna/results/bam/${base}.aligned.bam
+    sorted_bam=~/obss_2023/genomic_dna/results/bam/${base}.aligned.sorted.bam
+    raw_bcf=~/obss_2023/genomic_dna/results/bcf/${base}_raw.bcf
+    variants=~/obss_2023/genomic_dna/results/bcf/${base}_variants.vcf
+    final_variants=~/obss_2023/genomic_dna/results/vcf/${base}_final_variants.vcf
 
     bwa mem $genome $fq1 $fq2 > $sam
     samtools view -S -b $sam > $bam
     samtools sort -o $sorted_bam $bam
     samtools index $sorted_bam
     bcftools mpileup -O b -o $raw_bcf -f $genome $sorted_bam
-    bcftools call --ploidy 1 -m -v -o $variants $raw_bcf 
+    bcftools call --ploidy 1 -m -v -o $variants $raw_bcf
     vcfutils.pl varFilter $variants > $final_variants
-   
+
     done
 ```
 
@@ -295,14 +308,14 @@ First, notice that we change our working directory so that we can create new res
 in the right location.
 
 ```output
-cd ~/dc_workshop/results
+cd ~/obss_2023/genomic_dna/results
 ```
 
 Next we tell our script where to find the reference genome by assigning the `genome` variable to
 the path to our reference genome:
 
 ```output
-genome=~/dc_workshop/data/ref_genome/ecoli_rel606.fasta
+genome=~/obss_2023/genomic_dna/data/ref_genome/ecoli_rel606.fasta
 ```
 
 Next we index our reference genome for BWA:
@@ -326,7 +339,7 @@ The first thing we do is assign the name of the FASTQ file we are currently work
 tell the script to `echo` the filename back to us so we can check which file we are on.
 
 ```bash
-for fq1 in ~/dc_workshop/data/trimmed_fastq_small/*_1.trim.sub.fastq
+for fq1 in ~/obss_2023/genomic_dna/data/trimmed_fastq_small/*_1.trim.sub.fastq
     do
     echo "working with file $fq1"
 ```
@@ -343,63 +356,63 @@ We can use the `base` variable to access both the `base_1.fastq` and `base_2.fas
 
 ```bash
     #input fastq files
-    fq1=~/dc_workshop/data/trimmed_fastq_small/${base}_1.trim.sub.fastq
-    fq2=~/dc_workshop/data/trimmed_fastq_small/${base}_2.trim.sub.fastq
-    
+    fq1=~/obss_2023/genomic_dna/data/trimmed_fastq_small/${base}_1.trim.sub.fastq
+    fq2=~/obss_2023/genomic_dna/data/trimmed_fastq_small/${base}_2.trim.sub.fastq
+
     # output files
-    sam=~/dc_workshop/results/sam/${base}.aligned.sam
-    bam=~/dc_workshop/results/bam/${base}.aligned.bam
-    sorted_bam=~/dc_workshop/results/bam/${base}.aligned.sorted.bam
-    raw_bcf=~/dc_workshop/results/bcf/${base}_raw.bcf
-    variants=~/dc_workshop/results/bcf/${base}_variants.vcf
-    final_variants=~/dc_workshop/results/vcf/${base}_final_variants.vcf     
+    sam=~/obss_2023/genomic_dna/results/sam/${base}.aligned.sam
+    bam=~/obss_2023/genomic_dna/results/bam/${base}.aligned.bam
+    sorted_bam=~/obss_2023/genomic_dna/results/bam/${base}.aligned.sorted.bam
+    raw_bcf=~/obss_2023/genomic_dna/results/bcf/${base}_raw.bcf
+    variants=~/obss_2023/genomic_dna/results/bcf/${base}_variants.vcf
+    final_variants=~/obss_2023/genomic_dna/results/vcf/${base}_final_variants.vcf
 ```
 
 And finally, the actual workflow steps:
 
-1) align the reads to the reference genome and output a `.sam` file:
+1. align the reads to the reference genome and output a `.sam` file:
 
 ```output
     bwa mem $genome $fq1 $fq2 > $sam
 ```
 
-2) convert the SAM file to BAM format:
+2. convert the SAM file to BAM format:
 
 ```output
     samtools view -S -b $sam > $bam
 ```
 
-3) sort the BAM file:
+3. sort the BAM file:
 
 ```output
-    samtools sort -o $sorted_bam $bam 
+    samtools sort -o $sorted_bam $bam
 ```
 
-4) index the BAM file for display purposes:
+4. index the BAM file for display purposes:
 
 ```output
     samtools index $sorted_bam
 ```
 
-5) calculate the read coverage of positions in the genome:
+5. calculate the read coverage of positions in the genome:
 
 ```output
-    bcftools mpileup -O b -o $raw_bcf -f $genome $sorted_bam 
+    bcftools mpileup -O b -o $raw_bcf -f $genome $sorted_bam
 ```
 
-6) call SNVs with bcftools:
+6. call SNVs with bcftools:
 
 ```output
-    bcftools call --ploidy 1 -m -v -o $variants $raw_bcf 
+    bcftools call --ploidy 1 -m -v -o $variants $raw_bcf
 ```
 
-7) filter and report the SNVs in variant calling format (VCF):
+7. filter and report the SNVs in variant calling format (VCF):
 
 ```output
     vcfutils.pl varFilter $variants  > $final_variants
 ```
 
-:::::::::::::::::::::::::::::::::::::::  challenge
+::::::::::::::::::::::::::::::::::::::: challenge
 
 ### Exercise
 
@@ -412,10 +425,10 @@ a `#` character will be interpreted as a comment, bash will not try to run these
 Now we can run our script:
 
 ```bash
-$ bash run_variant_calling.sh
+$ bash run_variant_calling_nesi.sh
 ```
 
-:::::::::::::::::::::::::::::::::::::::  challenge
+::::::::::::::::::::::::::::::::::::::: challenge
 
 ### Exercise
 
@@ -427,12 +440,12 @@ over time? Examine the metadata table. What is one reason the number of mutation
 Hint: You can find a copy of the output files for the subsampled trimmed FASTQ file variant calling in the
 `~/.solutions/wrangling-solutions/variant_calling_auto/` directory.
 
-:::::::::::::::  solution
+::::::::::::::: solution
 
 ### Solution
 
 ```bash
-$ for infile in ~/dc_workshop/results/vcf/*_final_variants.vcf
+$ for infile in ~/obss_2023/genomic_dna/results/vcf/*_final_variants.vcf
 > do
 >     echo ${infile}
 >     grep -v "#" ${infile} | wc -l
@@ -447,12 +460,12 @@ strain to have more mutations.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-:::::::::::::::::::::::::::::::::::::::  challenge
+::::::::::::::::::::::::::::::::::::::: challenge
 
 ### Bonus exercise
 
-If you have time after completing the previous exercise, use `run_variant_calling.sh` to run the variant calling pipeline
-on the full-sized trimmed FASTQ files. You should have a copy of these already in `~/dc_workshop/data/trimmed_fastq`, but if
+If you have time after completing the previous exercise, use `run_variant_calling_nesi.sh` to run the variant calling pipeline
+on the full-sized trimmed FASTQ files. You should have a copy of these already in `~/obss_2023/genomic_dna/data/trimmed_fastq`, but if
 you do not, there is a copy in `~/.solutions/wrangling-solutions/trimmed_fastq`. Does the number of variants change per sample?
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -463,5 +476,3 @@ you do not, there is a copy in `~/.solutions/wrangling-solutions/trimmed_fastq`.
 - Use `echo` statements within your scripts to get an automated progress update.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
-
-
