@@ -250,7 +250,7 @@
       </div>
       <hr></nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>Variant Calling Workflow</h1>
-        <p> Last updated on 2023-05-04 | 
+        <p> Last updated on 2023-11-01 | 
         
         <a href="https://github.com/otagobioinformaticsspringschool/wrangling-genomics-nesi/edit/main/episodes/04-variant_calling.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
         
@@ -289,6 +289,9 @@ calling.</li>
 </div>
 </div>
 </div>
+<p><strong>This lesson has been adapted from the original <a href="https://datacarpentry.org/wrangling-genomics/" class="external-link">Data Carpentry -
+Wrangling Genomics</a> to be run using the NeSI infrastructure as part
+of the Otago Bioinformatics Spring School instead of AWS.</strong></p>
 <p>We mentioned before that we are working with files from a long-term
 evolution study of an <em>E. coli</em> population (designated Ara-3).
 Now that we have looked at our data to make sure that it is high
@@ -318,7 +321,7 @@ we will practice that here.</p>
 <div class="codewrapper sourceCode" id="cb1">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd ~/dc_workshop</span>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd ~/obss_2023/genomic_dna</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> mkdir <span class="at">-p</span> data/ref_genome</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> curl <span class="at">-L</span> <span class="at">-o</span> data/ref_genome/ecoli_rel606.fasta.gz ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/017/985/GCA_000017985.1_ASM1798v1/GCA_000017985.1_ASM1798v1_genomic.fna.gz</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> gunzip data/ref_genome/ecoli_rel606.fasta.gz</span></code></pre>
@@ -344,7 +347,7 @@ it. What is the real name of the genome?</p>
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -497,7 +500,7 @@ the output.</p>
 <div class="codewrapper sourceCode" id="cb12">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> samtools sort <span class="at">-o</span> results/bam/SRR2584866.aligned.sorted.bam results/bam/SRR2584866.aligned.bam </span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> samtools sort <span class="at">-o</span> results/bam/SRR2584866.aligned.sorted.bam results/bam/SRR2584866.aligned.bam</span></code></pre>
 </div>
 <p>Our files are pretty small, so we will not see this output. If you
 run the workflow with larger files, you will see something like
@@ -560,7 +563,7 @@ path to the reference genome:</p>
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> bcftools mpileup <span class="at">-O</span> b <span class="at">-o</span> results/bcf/SRR2584866_raw.bcf <span class="dt">\</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>-f data/ref_genome/ecoli_rel606.fasta results/bam/SRR2584866.aligned.sorted.bam </span></code></pre>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>-f data/ref_genome/ecoli_rel606.fasta results/bam/SRR2584866.aligned.sorted.bam</span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -581,7 +584,7 @@ specifies where to write the output file:</p>
 <div class="codewrapper sourceCode" id="cb18">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> bcftools call <span class="at">--ploidy</span> 1 <span class="at">-m</span> <span class="at">-v</span> <span class="at">-o</span> results/vcf/SRR2584866_variants.vcf results/bcf/SRR2584866_raw.bcf </span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> bcftools call <span class="at">--ploidy</span> 1 <span class="at">-m</span> <span class="at">-v</span> <span class="at">-o</span> results/vcf/SRR2584866_variants.vcf results/bcf/SRR2584866_raw.bcf</span></code></pre>
 </div>
 </div>
 <div class="section level4">
@@ -691,7 +694,7 @@ CP000819.1      64042   .       G       A       225     .       DP=18;VDB=0.4513
 understand our output.</p>
 <p>The first few columns represent the information we have about a
 predicted variation.</p>
-<table class="table"><colgroup><col width="2%"><col width="97%"></colgroup><thead><tr class="header"><th>column</th>
+<table class="table"><colgroup><col width="4%"><col width="95%"></colgroup><thead><tr class="header"><th>column</th>
 <th>info</th>
 </tr></thead><tbody><tr class="odd"><td>CHROM</td>
 <td>contig location where the variation occurs</td>
@@ -714,14 +717,14 @@ would be all we needed to filter out bad variant calls. However, in
 reality we need to filter on multiple other metrics.</p>
 <p>The last two columns contain the genotypes and can be tricky to
 decode.</p>
-<table class="table"><colgroup><col width="2%"><col width="97%"></colgroup><thead><tr class="header"><th>column</th>
+<table class="table"><thead><tr class="header"><th>column</th>
 <th>info</th>
 </tr></thead><tbody><tr class="odd"><td>FORMAT</td>
 <td>lists in order the metrics presented in the final column</td>
 </tr><tr class="even"><td>results</td>
 <td>lists the values associated with those metrics in order</td>
 </tr></tbody></table><p>For our file, the metrics presented are GT:PL:GQ.</p>
-<table class="table"><colgroup><col width="2%"><col width="97%"></colgroup><thead><tr class="header"><th>metric</th>
+<table class="table"><colgroup><col width="1%"><col width="98%"></colgroup><thead><tr class="header"><th>metric</th>
 <th>definition</th>
 </tr></thead><tbody><tr class="odd"><td>AD, DP</td>
 <td>the depth per allele by sample and coverage</td>
@@ -758,7 +761,7 @@ learned to assess how many variants are in the vcf file.</p>
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb24">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -877,12 +880,12 @@ canonical nucleotide in that position?</p>
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb29">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> samtools tview ~/dc_workshop/results/bam/SRR2584866.aligned.sorted.bam ~/dc_workshop/data/ref_genome/ecoli_rel606.fasta</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> samtools tview ~/obss_2023/genomic_dna/results/bam/SRR2584866.aligned.sorted.bam ~/obss_2023/genomic_dna/data/ref_genome/ecoli_rel606.fasta</span></code></pre>
 </div>
 <p>Then type <code>g</code>. In the dialogue box, type
 <code>CP000819.1:4377265</code>. <code>G</code> is the variant.
@@ -895,7 +898,7 @@ which controls DNA mismatch repair.</p>
 </div>
 </div>
 <div class="section level4">
-<h4 id="viewing-with-igv">Viewing with IGV<a class="anchor" aria-label="anchor" href="#viewing-with-igv"></a></h4>
+<h4 id="viewing-with-igv-for-original-lesson-using-aws">Viewing with IGV (for original lesson using AWS)<a class="anchor" aria-label="anchor" href="#viewing-with-igv-for-original-lesson-using-aws"></a></h4>
 <p><a href="https://www.broadinstitute.org/igv/" class="external-link">IGV</a> is a
 stand-alone browser, which has the advantage of being installed locally
 and providing fast access. Web-based genome browsers, like <a href="https://www.ensembl.org/index.html" class="external-link">Ensembl</a> or the <a href="https://genome.ucsc.edu/" class="external-link">UCSC browser</a>, are slower, but
@@ -1085,8 +1088,8 @@ file, and how it was derived.</li>
   "url": "https://otagobioinformaticsspringschool.github.io/wrangling-genomics-nesi/instructor/04-variant_calling.html",
   "identifier": "https://otagobioinformaticsspringschool.github.io/wrangling-genomics-nesi/instructor/04-variant_calling.html",
   "dateCreated": "2015-03-24",
-  "dateModified": "2023-05-04",
-  "datePublished": "2023-10-31"
+  "dateModified": "2023-11-01",
+  "datePublished": "2023-11-01"
 }
 
   </script><script>

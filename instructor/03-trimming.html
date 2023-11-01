@@ -251,7 +251,7 @@
       </div>
       <hr></nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>Trimming and Filtering</h1>
-        <p> Last updated on 2023-05-04 | 
+        <p> Last updated on 2023-11-01 | 
         
         <a href="https://github.com/otagobioinformaticsspringschool/wrangling-genomics-nesi/edit/main/episodes/03-trimming.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
         
@@ -290,6 +290,9 @@ tools.</li>
 </div>
 </div>
 </div>
+<p><strong>This lesson has been adapted from the original <a href="https://datacarpentry.org/wrangling-genomics/" class="external-link">Data Carpentry -
+Wrangling Genomics</a> to be run using the NeSI infrastructure as part
+of the Otago Bioinformatics Spring School instead of AWS.</strong></p>
 <section id="cleaning-reads"><h2 class="section-heading">Cleaning reads<a class="anchor" aria-label="anchor" href="#cleaning-reads"></a>
 </h2>
 <hr class="half-width"><p>In the previous episode, we took a high-level look at the quality of
@@ -319,11 +322,11 @@ the following command, we can see some of our options.</p>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>Usage: 
+<pre class="output" tabindex="0"><code>Usage:
        PE [-version] [-threads &lt;threads&gt;] [-phred33|-phred64] [-trimlog &lt;trimLogFile&gt;] [-summary &lt;statsSummaryFile&gt;] [-quiet] [-validatePairs] [-basein &lt;inputBase&gt; | &lt;inputFile1&gt; &lt;inputFile2&gt;] [-baseout &lt;outputBase&gt; | &lt;outputFile1P&gt; &lt;outputFile1U&gt; &lt;outputFile2P&gt; &lt;outputFile2U&gt;] &lt;trimmer1&gt;...
-   or: 
+   or:
        SE [-version] [-threads &lt;threads&gt;] [-phred33|-phred64] [-trimlog &lt;trimLogFile&gt;] [-summary &lt;statsSummaryFile&gt;] [-quiet] &lt;inputFile&gt; &lt;outputFile&gt; &lt;trimmer1&gt;...
-   or: 
+   or:
        -version</code></pre>
 </div>
 <p>This output shows us that we must first specify whether we have
@@ -339,7 +342,7 @@ Trimmomatic expects the two input files, and then the names of the
 output files. These files are described below. While, in single end
 mode, Trimmomatic will expect 1 file as input, after which you can enter
 the optional settings and lastly the name of the output file.</p>
-<table class="table"><colgroup><col width="11%"><col width="88%"></colgroup><thead><tr class="header"><th>option</th>
+<table class="table"><colgroup><col width="13%"><col width="86%"></colgroup><thead><tr class="header"><th>option</th>
 <th>meaning</th>
 </tr></thead><tbody><tr class="odd"><td>&lt;inputFile1&gt;</td>
 <td>Input reads to be trimmed. Typically the file name will contain an
@@ -361,7 +364,7 @@ file.</td>
 file.</td>
 </tr></tbody></table><p>The last thing trimmomatic expects to see is the trimming
 parameters:</p>
-<table class="table"><colgroup><col width="11%"><col width="88%"></colgroup><thead><tr class="header"><th>step</th>
+<table class="table"><colgroup><col width="12%"><col width="87%"></colgroup><thead><tr class="header"><th>step</th>
 <th>meaning</th>
 </tr></thead><tbody><tr class="odd"><td><code>ILLUMINACLIP</code></td>
 <td>Perform adapter removal.</td>
@@ -400,7 +403,7 @@ do not have the files it refers to:</p>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>              ILLUMINACLIP:SRR_adapters.fa SLIDINGWINDOW:4:20</span></code></pre>
 </div>
 <p>In this example, we have told Trimmomatic:</p>
-<table class="table"><colgroup><col width="11%"><col width="88%"></colgroup><thead><tr class="header"><th>code</th>
+<table class="table"><colgroup><col width="22%"><col width="77%"></colgroup><thead><tr class="header"><th>code</th>
 <th>meaning</th>
 </tr></thead><tbody><tr class="odd"><td><code>PE</code></td>
 <td>that it will be taking a paired end file as input</td>
@@ -452,7 +455,7 @@ your code more readable.</p>
 <div class="codewrapper sourceCode" id="cb4">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd ~/dc_workshop/data/untrimmed_fastq</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd ~/obss_2023/genomic_dna/data/untrimmed_fastq</span></code></pre>
 </div>
 <p>We are going to run Trimmomatic on one of our paired-end samples.
 While using FastQC we saw that Nextera adapters were present in our
@@ -462,7 +465,7 @@ directory.</p>
 <div class="codewrapper sourceCode" id="cb5">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cp ~/.miniconda3/pkgs/trimmomatic-0.38-0/share/trimmomatic-0.38-0/adapters/NexteraPE-PE.fa .</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ~/obss_2023/genomic_dna/adapters/NexteraPE-PE.fa .</span></code></pre>
 </div>
 <p>We will also use a sliding window of size 4 that will remove bases if
 their phred score is below 20 (like in our example above). We will also
@@ -570,7 +573,7 @@ it again before we run our for loop.</p>
 <div class="codewrapper sourceCode" id="cb12">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gzip</span> SRR2584863_1.fastq </span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gzip</span> SRR2584863_1.fastq</span></code></pre>
 </div>
 <div class="codewrapper sourceCode" id="cb13">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -581,7 +584,7 @@ it again before we run our for loop.</p>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span>   trimmomatic <span class="ex">PE</span> <span class="va">${infile}</span> <span class="va">${base}</span>_2.fastq.gz <span class="dt">\</span></span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span>                <span class="va">${base}</span>_1.trim.fastq.gz <span class="va">${base}</span>_1un.trim.fastq.gz <span class="dt">\</span></span>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span>                <span class="va">${base}</span>_2.trim.fastq.gz <span class="va">${base}</span>_2un.trim.fastq.gz <span class="dt">\</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span>                SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:NexteraPE-PE.fa:2:40:15 </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span>                SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:NexteraPE-PE.fa:2:40:15</span>
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span> done</span></code></pre>
 </div>
 <p>Go ahead and run the for loop. It should take a few minutes for
@@ -634,7 +637,7 @@ Trimmomatic?</p>
 <div class="codewrapper sourceCode" id="cb16">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ls ~/miniconda3/pkgs/trimmomatic-0.38-0/share/trimmomatic-0.38-0/adapters/</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ls ~/obss_2023/genomic_dna/adapters/</span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -652,7 +655,7 @@ to a new subdirectory within our <code>data/</code> directory.</p>
 <div class="codewrapper sourceCode" id="cb18">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd ~/dc_workshop/data/untrimmed_fastq</span>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd ~/obss_2023/genomic_dna/data/untrimmed_fastq</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> mkdir ../trimmed_fastq</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> mv <span class="pp">*</span>.trim<span class="pp">*</span> ../trimmed_fastq</span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd ../trimmed_fastq</span>
@@ -685,7 +688,7 @@ whether your per base sequence quality is higher after trimming.</p>
 <div class="accordion-item">
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3">
-  Show me the solution
+  Solution (for original lesson using AWS)
   </h4>
 </button>
 <div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
@@ -791,8 +794,8 @@ important!</li>
   "url": "https://otagobioinformaticsspringschool.github.io/wrangling-genomics-nesi/instructor/03-trimming.html",
   "identifier": "https://otagobioinformaticsspringschool.github.io/wrangling-genomics-nesi/instructor/03-trimming.html",
   "dateCreated": "2015-03-24",
-  "dateModified": "2023-05-04",
-  "datePublished": "2023-10-31"
+  "dateModified": "2023-11-01",
+  "datePublished": "2023-11-01"
 }
 
   </script><script>
