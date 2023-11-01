@@ -18,6 +18,8 @@ exercises: 25
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
+**This lesson has been adapted from the original [Data Carpentry - Wrangling Genomics](https://datacarpentry.org/wrangling-genomics/) to be run using the NeSI infrastructure as part of the Otago Bioinformatics Spring School instead of AWS.**
+
 ## Cleaning reads
 
 In the previous episode, we took a high-level look at the quality
@@ -42,11 +44,11 @@ $ trimmomatic
 Which will give you the following output:
 
 ```output
-Usage: 
+Usage:
        PE [-version] [-threads <threads>] [-phred33|-phred64] [-trimlog <trimLogFile>] [-summary <statsSummaryFile>] [-quiet] [-validatePairs] [-basein <inputBase> | <inputFile1> <inputFile2>] [-baseout <outputBase> | <outputFile1P> <outputFile1U> <outputFile2P> <outputFile2U>] <trimmer1>...
-   or: 
+   or:
        SE [-version] [-threads <threads>] [-phred33|-phred64] [-trimlog <trimLogFile>] [-summary <statsSummaryFile>] [-quiet] <inputFile> <outputFile> <trimmer1>...
-   or: 
+   or:
        -version
 ```
 
@@ -55,28 +57,28 @@ Next, we specify what flag we would like to run. For example, you can specify `t
 processors on your computer that you want Trimmomatic to use. In most cases using multiple threads (processors) can help to run the trimming faster. These flags are not necessary, but they can give you more control over the command. The flags are followed by positional arguments, meaning the order in which you specify them is important.
 In paired end mode, Trimmomatic expects the two input files, and then the names of the output files. These files are described below. While, in single end mode, Trimmomatic will expect 1 file as input, after which you can enter the optional settings and lastly the name of the output file.
 
-| option         | meaning                                                                                                      | 
-| -------------- | ------------------------------------------------------------------------------------------------------------ |
-| \<inputFile1>   | Input reads to be trimmed. Typically the file name will contain an `_1` or `_R1` in the name.                                          | 
-| \<inputFile2>   | Input reads to be trimmed. Typically the file name will contain an `_2` or `_R2` in the name.                                          | 
-| \<outputFile1P> | Output file that contains surviving pairs from the `_1` file.                                                          | 
-| \<outputFile1U> | Output file that contains orphaned reads from the `_1` file.                                                           | 
-| \<outputFile2P> | Output file that contains surviving pairs from the `_2` file.                                                          | 
-| \<outputFile2U> | Output file that contains orphaned reads from the `_2` file.                                                           | 
+| option          | meaning                                                                                       |
+| --------------- | --------------------------------------------------------------------------------------------- |
+| \<inputFile1>   | Input reads to be trimmed. Typically the file name will contain an `_1` or `_R1` in the name. |
+| \<inputFile2>   | Input reads to be trimmed. Typically the file name will contain an `_2` or `_R2` in the name. |
+| \<outputFile1P> | Output file that contains surviving pairs from the `_1` file.                                 |
+| \<outputFile1U> | Output file that contains orphaned reads from the `_1` file.                                  |
+| \<outputFile2P> | Output file that contains surviving pairs from the `_2` file.                                 |
+| \<outputFile2U> | Output file that contains orphaned reads from the `_2` file.                                  |
 
 The last thing trimmomatic expects to see is the trimming parameters:
 
-| step           | meaning                                                                                                      | 
-| -------------- | ------------------------------------------------------------------------------------------------------------ |
-| `ILLUMINACLIP`               | Perform adapter removal.                                                                                     | 
-| `SLIDINGWINDOW`               | Perform sliding window trimming, cutting once the average quality within the window falls below a threshold. | 
-| `LEADING`               | Cut bases off the start of a read, if below a threshold quality.                                             | 
-| `TRAILING`               | Cut bases off the end of a read, if below a threshold quality.                                               | 
-| `CROP`               | Cut the read to a specified length.                                                                          | 
-| `HEADCROP`               | Cut the specified number of bases from the start of the read.                                                | 
-| `MINLEN`               | Drop an entire read if it is below a specified length.                                                       | 
-| `TOPHRED33`               | Convert quality scores to Phred-33.                                                                          | 
-| `TOPHRED64`               | Convert quality scores to Phred-64.                                                                          | 
+| step            | meaning                                                                                                      |
+| --------------- | ------------------------------------------------------------------------------------------------------------ |
+| `ILLUMINACLIP`  | Perform adapter removal.                                                                                     |
+| `SLIDINGWINDOW` | Perform sliding window trimming, cutting once the average quality within the window falls below a threshold. |
+| `LEADING`       | Cut bases off the start of a read, if below a threshold quality.                                             |
+| `TRAILING`      | Cut bases off the end of a read, if below a threshold quality.                                               |
+| `CROP`          | Cut the read to a specified length.                                                                          |
+| `HEADCROP`      | Cut the specified number of bases from the start of the read.                                                |
+| `MINLEN`        | Drop an entire read if it is below a specified length.                                                       |
+| `TOPHRED33`     | Convert quality scores to Phred-33.                                                                          |
+| `TOPHRED64`     | Convert quality scores to Phred-64.                                                                          |
 
 We will use only a few of these options and trimming steps in our
 analysis. It is important to understand the steps you are using to
@@ -94,27 +96,26 @@ $ trimmomatic PE -threads 4 SRR_1056_1.fastq SRR_1056_2.fastq  \
 
 In this example, we have told Trimmomatic:
 
-| code           | meaning                                                                                                      | 
-| -------------- | ------------------------------------------------------------------------------------------------------------ |
-| `PE`               | that it will be taking a paired end file as input                                                            | 
-| `-threads 4`               | to use four computing threads to run (this will speed up our run)                                            | 
-| `SRR_1056_1.fastq`               | the first input file name                                                                                    | 
-| `SRR_1056_2.fastq`               | the second input file name                                                                                   | 
-| `SRR_1056_1.trimmed.fastq`               | the output file for surviving pairs from the `_1` file                                                                | 
-| `SRR_1056_1un.trimmed.fastq`               | the output file for orphaned reads from the `_1` file                                                                 | 
-| `SRR_1056_2.trimmed.fastq`               | the output file for surviving pairs from the `_2` file                                                                | 
-| `SRR_1056_2un.trimmed.fastq`               | the output file for orphaned reads from the `_2` file                                                                 | 
-| `ILLUMINACLIP:SRR_adapters.fa`               | to clip the Illumina adapters from the input file using the adapter sequences listed in `SRR_adapters.fa`                     | 
-| `SLIDINGWINDOW:4:20`               | to use a sliding window of size 4 that will remove bases if their phred score is below 20                    | 
+| code                           | meaning                                                                                                   |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| `PE`                           | that it will be taking a paired end file as input                                                         |
+| `-threads 4`                   | to use four computing threads to run (this will speed up our run)                                         |
+| `SRR_1056_1.fastq`             | the first input file name                                                                                 |
+| `SRR_1056_2.fastq`             | the second input file name                                                                                |
+| `SRR_1056_1.trimmed.fastq`     | the output file for surviving pairs from the `_1` file                                                    |
+| `SRR_1056_1un.trimmed.fastq`   | the output file for orphaned reads from the `_1` file                                                     |
+| `SRR_1056_2.trimmed.fastq`     | the output file for surviving pairs from the `_2` file                                                    |
+| `SRR_1056_2un.trimmed.fastq`   | the output file for orphaned reads from the `_2` file                                                     |
+| `ILLUMINACLIP:SRR_adapters.fa` | to clip the Illumina adapters from the input file using the adapter sequences listed in `SRR_adapters.fa` |
+| `SLIDINGWINDOW:4:20`           | to use a sliding window of size 4 that will remove bases if their phred score is below 20                 |
 
-:::::::::::::::::::::::::::::::::::::::::  callout
+::::::::::::::::::::::::::::::::::::::::: callout
 
 ## Multi-line commands
 
 Some of the commands we ran in this lesson are long! When typing a long
 command into your terminal, you can use the `\` character
 to separate code chunks onto separate lines. This can make your code more readable.
-
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -123,7 +124,7 @@ to separate code chunks onto separate lines. This can make your code more readab
 Now we will run Trimmomatic on our data. To begin, navigate to your `untrimmed_fastq` data directory:
 
 ```bash
-$ cd ~/dc_workshop/data/untrimmed_fastq
+$ cd ~/obss_2023/genomic_dna/data/untrimmed_fastq
 ```
 
 We are going to run Trimmomatic on one of our paired-end samples.
@@ -131,7 +132,7 @@ While using FastQC we saw that Nextera adapters were present in our samples.
 The adapter sequences came with the installation of trimmomatic, so we will first copy these sequences into our current directory.
 
 ```bash
-$ cp ~/.miniconda3/pkgs/trimmomatic-0.38-0/share/trimmomatic-0.38-0/adapters/NexteraPE-PE.fa .
+$ ~/obss_2023/genomic_dna/adapters/NexteraPE-PE.fa .
 ```
 
 We will also use a sliding window of size 4 that will remove bases if their
@@ -166,24 +167,22 @@ Input Read Pairs: 1107090 Both Surviving: 885220 (79.96%) Forward Only Surviving
 TrimmomaticPE: Completed successfully
 ```
 
-:::::::::::::::::::::::::::::::::::::::  challenge
+::::::::::::::::::::::::::::::::::::::: challenge
 
 ## Exercise
 
 Use the output from your Trimmomatic command to answer the
 following questions.
 
-1) What percent of reads did we discard from our sample?
-2) What percent of reads did we keep both pairs?
+1. What percent of reads did we discard from our sample?
+2. What percent of reads did we keep both pairs?
 
-:::::::::::::::  solution
+::::::::::::::: solution
 
 ## Solution
 
-1) 0\.23%
-2) 79\.96%
-  
-  
+1. 0\.23%
+2. 79\.96%
 
 :::::::::::::::::::::::::
 
@@ -229,7 +228,7 @@ quickly!
 We unzipped one of our files before to work with it, let's compress it again before we run our for loop.
 
 ```bash
-gzip SRR2584863_1.fastq 
+gzip SRR2584863_1.fastq
 ```
 
 ```bash
@@ -239,7 +238,7 @@ $ for infile in *_1.fastq.gz
 >   trimmomatic PE ${infile} ${base}_2.fastq.gz \
 >                ${base}_1.trim.fastq.gz ${base}_1un.trim.fastq.gz \
 >                ${base}_2.trim.fastq.gz ${base}_2un.trim.fastq.gz \
->                SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:NexteraPE-PE.fa:2:40:15 
+>                SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:NexteraPE-PE.fa:2:40:15
 > done
 ```
 
@@ -261,7 +260,7 @@ SRR2584863_2.trim.fastq.gz    SRR2584866_2un.trim.fastq.gz
 SRR2584863_2un.trim.fastq.gz  SRR2589044_1.fastq.gz
 ```
 
-:::::::::::::::::::::::::::::::::::::::  challenge
+::::::::::::::::::::::::::::::::::::::: challenge
 
 ## Exercise
 
@@ -269,12 +268,12 @@ We trimmed our fastq files with Nextera adapters,
 but there are other adapters that are commonly used.
 What other adapter files came with Trimmomatic?
 
-:::::::::::::::  solution
+::::::::::::::: solution
 
 ## Solution
 
 ```bash
-$ ls ~/miniconda3/pkgs/trimmomatic-0.38-0/share/trimmomatic-0.38-0/adapters/
+$ ls ~/obss_2023/genomic_dna/adapters/
 ```
 
 ```output
@@ -291,7 +290,7 @@ control process! Before we move on, let's move our trimmed FASTQ files
 to a new subdirectory within our `data/` directory.
 
 ```bash
-$ cd ~/dc_workshop/data/untrimmed_fastq
+$ cd ~/obss_2023/genomic_dna/data/untrimmed_fastq
 $ mkdir ../trimmed_fastq
 $ mv *.trim* ../trimmed_fastq
 $ cd ../trimmed_fastq
@@ -305,7 +304,7 @@ SRR2584863_2.trim.fastq.gz    SRR2584866_2.trim.fastq.gz    SRR2589044_2.trim.fa
 SRR2584863_2un.trim.fastq.gz  SRR2584866_2un.trim.fastq.gz  SRR2589044_2un.trim.fastq.gz
 ```
 
-:::::::::::::::::::::::::::::::::::::::  challenge
+::::::::::::::::::::::::::::::::::::::: challenge
 
 ## Bonus exercise (advanced)
 
@@ -315,9 +314,9 @@ FastQC on your trimmed FASTQ files and visualize the HTML files
 to see whether your per base sequence quality is higher after
 trimming.
 
-:::::::::::::::  solution
+::::::::::::::: solution
 
-## Solution
+## Solution (for original lesson using AWS)
 
 In your AWS terminal window do:
 
@@ -346,8 +345,6 @@ other trimming tools like [cutadapt](https://cutadapt.readthedocs.io/en/stable/)
 downstream application. Trimmomatic did pretty well though, and its performance
 is good enough for our workflow.
 
-
-
 :::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -358,5 +355,3 @@ is good enough for our workflow.
 - Data cleaning is an essential step in a genomics workflow.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
-
-
