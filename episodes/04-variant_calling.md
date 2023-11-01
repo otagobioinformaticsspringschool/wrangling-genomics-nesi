@@ -18,11 +18,13 @@ exercises: 25
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-We mentioned before that we are working with files from a long-term evolution study of an *E. coli* population (designated Ara-3). Now that we have looked at our data to make sure that it is high quality, and removed low-quality base calls, we can perform variant calling to see how the population changed over time. We care how this population changed relative to the original population, *E. coli* strain REL606. Therefore, we will align each of our samples to the *E. coli* REL606 reference genome, and see what differences exist in our reads versus the genome.
+**This lesson has been adapted from the original [Data Carpentry - Wrangling Genomics](https://datacarpentry.org/wrangling-genomics/) to be run using the NeSI infrastructure as part of the Otago Bioinformatics Spring School instead of AWS.**
+
+We mentioned before that we are working with files from a long-term evolution study of an _E. coli_ population (designated Ara-3). Now that we have looked at our data to make sure that it is high quality, and removed low-quality base calls, we can perform variant calling to see how the population changed over time. We care how this population changed relative to the original population, _E. coli_ strain REL606. Therefore, we will align each of our samples to the _E. coli_ REL606 reference genome, and see what differences exist in our reads versus the genome.
 
 ## Alignment to a reference genome
 
-![](fig/variant_calling_workflow_align.png){alt='workflow\_align'}
+![](fig/variant_calling_workflow_align.png){alt='workflow_align'}
 
 We perform read alignment or mapping to determine where in the genome our reads originated from. There are a number of tools to
 choose from and, while there is no gold standard, there are some tools that are better suited for particular NGS analyses. We will be
@@ -36,23 +38,23 @@ The alignment process consists of two steps:
 
 ## Setting up
 
-First we download the reference genome for *E. coli* REL606. Although we could copy or move the file with `cp` or `mv`, most genomics workflows begin with a download step, so we will practice that here.
+First we download the reference genome for _E. coli_ REL606. Although we could copy or move the file with `cp` or `mv`, most genomics workflows begin with a download step, so we will practice that here.
 
 ```bash
-$ cd ~/dc_workshop
+$ cd ~/obss_2023/genomic_dna
 $ mkdir -p data/ref_genome
 $ curl -L -o data/ref_genome/ecoli_rel606.fasta.gz ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/017/985/GCA_000017985.1_ASM1798v1/GCA_000017985.1_ASM1798v1_genomic.fna.gz
 $ gunzip data/ref_genome/ecoli_rel606.fasta.gz
 ```
 
-:::::::::::::::::::::::::::::::::::::::  challenge
+::::::::::::::::::::::::::::::::::::::: challenge
 
 ### Exercise
 
 We saved this file as `data/ref_genome/ecoli_rel606.fasta.gz` and then decompressed it.
 What is the real name of the genome?
 
-:::::::::::::::  solution
+::::::::::::::: solution
 
 ### Solution
 
@@ -62,8 +64,6 @@ $ head data/ref_genome/ecoli_rel606.fasta
 
 The name of the sequence follows the `>` character. The name is `CP000819.1 Escherichia coli B str. REL606, complete genome`.
 Keep this chromosome name (`CP000819.1`) in mind, as we will use it later in the lesson.
-
-
 
 :::::::::::::::::::::::::
 
@@ -121,8 +121,8 @@ $ bwa mem ref_genome.fasta input_file_R1.fastq input_file_R2.fastq > output.sam
 ```
 
 Have a look at the [bwa options page](https://bio-bwa.sourceforge.net/bwa.shtml). While we are running bwa with the default
-parameters here, your use case might require a change of parameters. *NOTE: Always read the manual page for any tool before using
-and make sure the options you use are appropriate for your data.*
+parameters here, your use case might require a change of parameters. _NOTE: Always read the manual page for any tool before using
+and make sure the options you use are appropriate for your data._
 
 We are going to start by aligning the reads from just one of the
 samples in our dataset (`SRR2584866`). Later, we will be
@@ -154,7 +154,7 @@ is a tab-delimited text file that contains information for each individual read 
 have time to go into detail about the features of the SAM format, the paper by
 [Heng Li et al.](https://bioinformatics.oxfordjournals.org/content/25/16/2078.full) provides a lot more detail on the specification.
 
-**The compressed binary version of SAM is called a BAM file.** We use this version to reduce size and to allow for *indexing*, which enables efficient random access of the data contained within the file.
+**The compressed binary version of SAM is called a BAM file.** We use this version to reduce size and to allow for _indexing_, which enables efficient random access of the data contained within the file.
 
 The file begins with a **header**, which is optional. The header is used to describe the source of data, reference sequence, method of
 alignment, etc., this will change depending on the aligner being used. Following the header is the **alignment section**. Each line
@@ -162,9 +162,9 @@ that follows corresponds to alignment information for a single read. Each alignm
 mapping information and a variable number of other fields for aligner specific information. An example entry from a SAM file is
 displayed below with the different fields highlighted.
 
-![](fig/sam_bam.png){alt='sam\_bam1'}
+![](fig/sam_bam.png){alt='sam_bam1'}
 
-![](fig/sam_bam3.png){alt='sam\_bam2'}
+![](fig/sam_bam3.png){alt='sam_bam2'}
 
 We will convert the SAM file to BAM format using the `samtools` program with the `view` command and tell this command that the input is in SAM format (`-S`) and to output BAM format (`-b`):
 
@@ -181,7 +181,7 @@ $ samtools view -S -b results/sam/SRR2584866.aligned.sam > results/bam/SRR258486
 Next we sort the BAM file using the `sort` command from `samtools`. `-o` tells the command where to write the output.
 
 ```bash
-$ samtools sort -o results/bam/SRR2584866.aligned.sorted.bam results/bam/SRR2584866.aligned.bam 
+$ samtools sort -o results/bam/SRR2584866.aligned.sorted.bam results/bam/SRR2584866.aligned.bam
 ```
 
 Our files are pretty small, so we will not see this output. If you run the workflow with larger files, you will see something like this:
@@ -235,7 +235,7 @@ bcf format output file, `-o` specifies where to write the output file, and `-f` 
 
 ```bash
 $ bcftools mpileup -O b -o results/bcf/SRR2584866_raw.bcf \
--f data/ref_genome/ecoli_rel606.fasta results/bam/SRR2584866.aligned.sorted.bam 
+-f data/ref_genome/ecoli_rel606.fasta results/bam/SRR2584866.aligned.sorted.bam
 ```
 
 ```output
@@ -246,10 +246,10 @@ We have now generated a file with coverage information for every base.
 
 #### Step 2: Detect the single nucleotide variants (SNVs)
 
-Identify SNVs using bcftools `call`. We have to specify ploidy with the flag `--ploidy`, which is one for the haploid *E. coli*. `-m` allows for multiallelic and rare-variant calling, `-v` tells the program to output variant sites only (not every site in the genome), and `-o` specifies where to write the output file:
+Identify SNVs using bcftools `call`. We have to specify ploidy with the flag `--ploidy`, which is one for the haploid _E. coli_. `-m` allows for multiallelic and rare-variant calling, `-v` tells the program to output variant sites only (not every site in the genome), and `-o` specifies where to write the output file:
 
 ```bash
-$ bcftools call --ploidy 1 -m -v -o results/vcf/SRR2584866_variants.vcf results/bcf/SRR2584866_raw.bcf 
+$ bcftools call --ploidy 1 -m -v -o results/vcf/SRR2584866_variants.vcf results/bcf/SRR2584866_raw.bcf
 ```
 
 #### Step 3: Filter and report the SNV variants in variant calling format (VCF)
@@ -260,7 +260,7 @@ Filter the SNVs for the final output in VCF format, using `vcfutils.pl`:
 $ vcfutils.pl varFilter results/vcf/SRR2584866_variants.vcf  > results/vcf/SRR2584866_final_variants.vcf
 ```
 
-:::::::::::::::::::::::::::::::::::::::::  callout
+::::::::::::::::::::::::::::::::::::::::: callout
 
 ### Filtering
 
@@ -346,45 +346,45 @@ This is a lot of information, so let's take some time to make sure we understand
 
 The first few columns represent the information we have about a predicted variation.
 
-| column  | info                                                                                                                                                                                                                                                                                                                                    | 
-| ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| CHROM   | contig location where the variation occurs                                                                                                                                                                                                                                                                                              | 
-| POS     | position within the contig where the variation occurs                                                                                                                                                                                                                                                                                   | 
-| ID      | a `.` until we add annotation information                                                                                                                                                                                                                                                                                                                                      | 
-| REF     | reference genotype (forward strand)                                                                                                                                                                                                                                                                                                     | 
-| ALT     | sample genotype (forward strand)                                                                                                                                                                                                                                                                                                        | 
-| QUAL    | Phred-scaled probability that the observed variant exists at this site (higher is better)                                                                                                                                                                                                                                               | 
-| FILTER  | a `.` if no quality filters have been applied, PASS if a filter is passed, or the name of the filters this variant failed                                                                                                                                                                                                                                                                                                                                      | 
+| column | info                                                                                                                      |
+| ------ | ------------------------------------------------------------------------------------------------------------------------- |
+| CHROM  | contig location where the variation occurs                                                                                |
+| POS    | position within the contig where the variation occurs                                                                     |
+| ID     | a `.` until we add annotation information                                                                                 |
+| REF    | reference genotype (forward strand)                                                                                       |
+| ALT    | sample genotype (forward strand)                                                                                          |
+| QUAL   | Phred-scaled probability that the observed variant exists at this site (higher is better)                                 |
+| FILTER | a `.` if no quality filters have been applied, PASS if a filter is passed, or the name of the filters this variant failed |
 
 In an ideal world, the information in the `QUAL` column would be all we needed to filter out bad variant calls.
 However, in reality we need to filter on multiple other metrics.
 
 The last two columns contain the genotypes and can be tricky to decode.
 
-| column  | info                                                                                                                                                                                                                                                                                                                                    | 
-| ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| FORMAT  | lists in order the metrics presented in the final column                                                                                                                                                                                                                                                                                | 
-| results | lists the values associated with those metrics in order                                                                                                                                                                                                                                                                                 | 
+| column  | info                                                     |
+| ------- | -------------------------------------------------------- |
+| FORMAT  | lists in order the metrics presented in the final column |
+| results | lists the values associated with those metrics in order  |
 
 For our file, the metrics presented are GT:PL:GQ.
 
-| metric  | definition                                                                                                                                                                                                                                                                                                                              | 
-| ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| AD, DP  | the depth per allele by sample and coverage                                                                                                                                                                                                                                                                                             | 
-| GT      | the genotype for the sample at this loci. For a diploid organism, the GT field indicates the two alleles carried by the sample, encoded by a 0 for the REF allele, 1 for the first ALT allele, 2 for the second ALT allele, etc. A 0/0 means homozygous reference, 0/1 is heterozygous, and 1/1 is homozygous for the alternate allele. | 
-| PL      | the likelihoods of the given genotypes                                                                                                                                                                                                                                                                                                  | 
-| GQ      | the Phred-scaled confidence for the genotype                                                                                                                                                                                                                                                                                            | 
+| metric | definition                                                                                                                                                                                                                                                                                                                              |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| AD, DP | the depth per allele by sample and coverage                                                                                                                                                                                                                                                                                             |
+| GT     | the genotype for the sample at this loci. For a diploid organism, the GT field indicates the two alleles carried by the sample, encoded by a 0 for the REF allele, 1 for the first ALT allele, 2 for the second ALT allele, etc. A 0/0 means homozygous reference, 0/1 is heterozygous, and 1/1 is homozygous for the alternate allele. |
+| PL     | the likelihoods of the given genotypes                                                                                                                                                                                                                                                                                                  |
+| GQ     | the Phred-scaled confidence for the genotype                                                                                                                                                                                                                                                                                            |
 
 The Broad Institute's [VCF guide](https://www.broadinstitute.org/gatk/guide/article?id=1268) is an excellent place
 to learn more about the VCF file format.
 
-:::::::::::::::::::::::::::::::::::::::  challenge
+::::::::::::::::::::::::::::::::::::::: challenge
 
 ### Exercise
 
 Use the `grep` and `wc` commands you have learned to assess how many variants are in the vcf file.
 
-:::::::::::::::  solution
+::::::::::::::: solution
 
 ### Solution
 
@@ -398,8 +398,6 @@ $ grep -v "#" results/vcf/SRR2584866_final_variants.vcf | wc -l
 
 There are 766 variants in this file.
 
-
-
 :::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -408,7 +406,7 @@ There are 766 variants in this file.
 
 It is often instructive to look at your data in a genome browser. Visualization will allow you to get a "feel" for
 the data, as well as detecting abnormalities and problems. Also, exploring the data in such a way may give you
-ideas for further analyses.  As such, visualization tools are useful for exploratory analysis. In this lesson we
+ideas for further analyses. As such, visualization tools are useful for exploratory analysis. In this lesson we
 will describe two different tools for visualization: a light-weight command-line based one and the Broad
 Institute's Integrative Genomics Viewer (IGV) which requires
 software installation and transfer of files.
@@ -469,32 +467,30 @@ to scroll or type `?` for a help menu. To navigate to a specific position, type 
 this box, type the name of the "chromosome" followed by a colon and the position of the variant you would like to view
 (e.g. for this sample, type `CP000819.1:50` to view the 50th base. Type `Ctrl^C` or `q` to exit `tview`.
 
-:::::::::::::::::::::::::::::::::::::::  challenge
+::::::::::::::::::::::::::::::::::::::: challenge
 
 ### Exercise
 
 Visualize the alignment of the reads for our `SRR2584866` sample. What variant is present at
 position 4377265? What is the canonical nucleotide in that position?
 
-:::::::::::::::  solution
+::::::::::::::: solution
 
 ### Solution
 
 ```bash
-$ samtools tview ~/dc_workshop/results/bam/SRR2584866.aligned.sorted.bam ~/dc_workshop/data/ref_genome/ecoli_rel606.fasta
+$ samtools tview ~/obss_2023/genomic_dna/results/bam/SRR2584866.aligned.sorted.bam ~/obss_2023/genomic_dna/data/ref_genome/ecoli_rel606.fasta
 ```
 
 Then type `g`. In the dialogue box, type `CP000819.1:4377265`.
 `G` is the variant. `A` is canonical. This variant possibly changes the phenotype of this sample to hypermutable. It occurs
-in the gene *mutL*, which controls DNA mismatch repair.
-
-
+in the gene _mutL_, which controls DNA mismatch repair.
 
 :::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-#### Viewing with IGV
+#### Viewing with IGV (for original lesson using AWS)
 
 [IGV](https://www.broadinstitute.org/igv/) is a stand-alone browser, which has the advantage of being installed locally and providing fast access. Web-based genome browsers, like [Ensembl](https://www.ensembl.org/index.html) or the [UCSC browser](https://genome.ucsc.edu/), are slower, but provide more functionality. They not only allow for more polished and flexible visualization, but also provide easy access to a wealth of annotations and external data sources. This makes it straightforward to relate your data with information about repeat regions, known genes, epigenetic features or areas of cross-species conservation, to name just a few.
 
@@ -536,8 +532,8 @@ Your IGV browser should look like the screenshot below:
 There should be two tracks: one coresponding to our BAM file and the other for our VCF file.
 
 In the **VCF track**, each bar across the top of the plot shows the allele fraction for a single locus. The second bar shows
-the genotypes for each locus in each *sample*. We only have one sample called here, so we only see a single line. Dark blue =
-heterozygous, Cyan = homozygous variant, Grey = reference.  Filtered entries are transparent.
+the genotypes for each locus in each _sample_. We only have one sample called here, so we only see a single line. Dark blue =
+heterozygous, Cyan = homozygous variant, Grey = reference. Filtered entries are transparent.
 
 Zoom in to inspect variants you see in your filtered VCF file to become more familiar with IGV. See how quality information
 corresponds to alignment information at those loci.
@@ -550,7 +546,7 @@ already know the tools we need to use to automate this workflow and run it on as
 single line of code. Those tools are: wildcards, for loops, and bash scripts. We will use all three in the next
 lesson.
 
-:::::::::::::::::::::::::::::::::::::::::  callout
+::::::::::::::::::::::::::::::::::::::::: callout
 
 ### Installing software
 
@@ -563,10 +559,9 @@ analyses on your own computer. You will need to install
 the software first. Look at the [setup instructions](https://www.datacarpentry.org/wrangling-genomics/setup.html) for more information
 on installing these software packages.
 
-
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-:::::::::::::::::::::::::::::::::::::::::  callout
+::::::::::::::::::::::::::::::::::::::::: callout
 
 ### BWA alignment options
 
@@ -574,7 +569,6 @@ BWA consists of three algorithms: BWA-backtrack, BWA-SW and BWA-MEM. The first a
 reads up to 100bp, while the other two are for sequences ranging from 70bp to 1Mbp. BWA-MEM and BWA-SW share similar features such
 as long-read support and split alignment, but BWA-MEM, which is the latest, is generally recommended for high-quality queries as it
 is faster and more accurate.
-
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -585,5 +579,3 @@ is faster and more accurate.
 - There are many different file formats for storing genomics data. It is important to understand what type of information is contained in each file, and how it was derived.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
-
-
