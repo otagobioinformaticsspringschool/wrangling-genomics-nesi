@@ -1,7 +1,7 @@
 ---
 title: Variant Calling Workflow
-teaching: 35
-exercises: 25
+teaching: 60
+exercises: 40
 ---
 
 ::::::::::::::::::::::::::::::::::::::: objectives
@@ -75,7 +75,7 @@ and will enable us to run our variant calling workflow quite quickly.
 ```bash
 $ curl -L -o sub.tar.gz https://ndownloader.figshare.com/files/14418248
 $ tar xvf sub.tar.gz
-$ mv sub/ ~/dc_workshop/data/trimmed_fastq_small
+$ mv sub/ ~/obss_2023/genomic_dna/data/trimmed_fastq_small
 ```
 
 You will also need to create directories for the results that will be generated as part of this workflow. We can do this in a single
