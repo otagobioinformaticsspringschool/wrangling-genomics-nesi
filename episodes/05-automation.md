@@ -298,8 +298,7 @@ for fq1 in ~/obss_2023/genomic_dna/data/trimmed_fastq_small/*_1.trim.sub.fastq
     bcftools mpileup -O b -o $raw_bcf -f $genome $sorted_bam
     bcftools call --ploidy 1 -m -v -o $variants $raw_bcf
     vcfutils.pl varFilter $variants > $final_variants
-
-    done
+done
 ```
 
 Now, we will go through each line in the script before running it.

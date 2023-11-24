@@ -218,7 +218,7 @@ At this point, lets validate that all the relevant tools are installed. If you a
 On NeSI, we load the tools by running a script that has the needed software and versions specified.
 
 ```bash
-$ source ~/obss_2022/genomic_dna/modload.sh`
+$ source ~/obss_2023/genomic_dna/modload.sh
 ```
 
 ## Modules
