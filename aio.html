@@ -289,7 +289,7 @@
         
 <section id="aio-01-background"><p>Content from <a href="01-background.html">Background and Metadata</a></p>
 <hr>
-<p> Last updated on 2023-05-04 | 
+<p> Last updated on 2023-11-27 | 
         
         <a href="https://github.com/otagobioinformaticsspringschool/wrangling-genomics-nesi/edit/main/episodes/01-background.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <div class="text-end">
@@ -480,7 +480,7 @@ the columns represent:</p>
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <ol style="list-style-type: decimal">
 <li>25 different generations</li>
@@ -493,6 +493,16 @@ the columns represent:</p>
 </div>
 </div>
 <!-- can add some additional info relevant to interplay of hypermutability and Cit+ adaptations, but keep it simple for now -->
+</div>
+</section><section id="information-about-illumina-sequencing"><h2 class="section-heading">Information about Illumina Sequencing<a class="anchor" aria-label="anchor" href="#information-about-illumina-sequencing"></a>
+</h2>
+<hr class="half-width">
+<p>This video is a useful background on the Illumina sequencing
+techology that was used to generate this data. In the next episode we’ll
+be starting our journey on processing the reads generated from the
+sequencer.</p>
+<iframe width="764" height="430" src="https://www.youtube.com/embed/fCd6B5HRaZ8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen enablejsapi="true" id="widget2">
+</iframe>
 <div id="keypoints1" class="callout keypoints">
 <div class="callout-square">
 <i class="callout-icon" data-feather="key"></i>
@@ -505,7 +515,6 @@ the columns represent:</p>
 <li>It is important to record and understand your experiment’s
 metadata.</li>
 </ul>
-</div>
 </div>
 </div>
 </div>
@@ -785,7 +794,7 @@ How confident are you in this read?</p>
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb10">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1039,7 +1048,7 @@ directory</p>
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb16">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1259,7 +1268,7 @@ worst?</p>
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
 <div class="accordion-body">
 <p>All of the reads contain usable data, but the quality decreases
 toward the end of the reads.</p>
@@ -1534,7 +1543,7 @@ test(s) did those samples fail?</p>
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution4" class="accordion-collapse collapse" data-bs-parent="#accordionSolution4" aria-labelledby="headingSolution4">
+<div id="collapseSolution4" class="accordion-collapse collapse" aria-labelledby="headingSolution4" data-bs-parent="#accordionSolution4">
 <div class="accordion-body">
 <p>We can get the list of all failed tests using <code>grep</code>.</p>
 <div class="codewrapper sourceCode" id="cb44">
@@ -1981,7 +1990,7 @@ questions.</p>
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <ol style="list-style-type: decimal">
 <li>0.23%</li>
@@ -2092,7 +2101,7 @@ Trimmomatic?</p>
   Show me the solution
   </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb16">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -2151,7 +2160,7 @@ whether your per base sequence quality is higher after trimming.</p>
   Solution (for original lesson using AWS)
   </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
 <div class="accordion-body">
 <p>In your AWS terminal window do:</p>
 <div class="codewrapper sourceCode" id="cb20">
@@ -3713,8 +3722,8 @@ automated progress update.</li>
   "url": "https://otagobioinformaticsspringschool.github.io/wrangling-genomics-nesi/aio.html",
   "identifier": "https://otagobioinformaticsspringschool.github.io/wrangling-genomics-nesi/aio.html",
   "dateCreated": "2015-03-24",
-  "dateModified": "2023-11-24",
-  "datePublished": "2023-11-24"
+  "dateModified": "2023-11-27",
+  "datePublished": "2023-11-27"
 }
 
   </script><script>
