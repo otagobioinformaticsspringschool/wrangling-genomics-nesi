@@ -741,7 +741,7 @@ SRR2584863_2_fastqc.html  SRR2584866_2_fastqc.html  SRR2589044_2_fastqc.html
 SRR2584863_2_fastqc.zip   SRR2584866_2_fastqc.zip   SRR2589044_2_fastqc.zip
 ```
 
-{:. output}
+
 
 The `.html` files and the uncompressed `.zip` files are still present,
 but now we also have a new directory for each of our samples. We can
